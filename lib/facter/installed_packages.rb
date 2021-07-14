@@ -26,7 +26,7 @@ Facter.add("installed_packages") do
   end
 end
 
-Facter.add('software') do
+Facter.add('installed_packages') do
   confine :kernel => 'windows'
   setcode do
     require 'win32/registry'
