@@ -120,7 +120,7 @@ Facter.add('installed_packages') do
                 if(displayname && uninstallpath)
                   installed_packages[displayname] = {
                     "version" => version,
-                    "installdate" => installdate,
+                  #  "installdate" => installdate,
                   }
                 end
               end
