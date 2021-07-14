@@ -54,6 +54,7 @@ Facter.add('installed_packages') do
         version         = k["DisplayVersion"] rescue nil      
         uninstallpath   = k["UninstallString"] rescue nil
         systemcomponent = k["SystemComponent"] rescue nil
+        installdate =  k["InstallDate"] rescue nil
 
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
@@ -76,6 +77,7 @@ Facter.add('installed_packages') do
         version         = k["DisplayVersion"] rescue nil
         uninstallpath   = k["UninstallString"] rescue nil
         systemcomponent = k["SystemComponent"] rescue nil
+        installdate =  k["InstallDate"] rescue nil
 
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
@@ -105,6 +107,7 @@ Facter.add('installed_packages') do
                 displayname   = k["DisplayName"] rescue nil
                 version       = k["DisplayVersion"] rescue nil
                 uninstallpath = k["UninstallString"] rescue nil
+                installdate =  k["InstallDate"] rescue nil
 
                 if(displayname && uninstallpath)
                   software_list << {DisplayName: displayname, Version: version }
