@@ -41,12 +41,15 @@ Facter.add("installed_packages") do
         version         = k["DisplayVersion"] rescue nil      
         uninstallpath   = k["UninstallString"] rescue nil
         systemcomponent = k["SystemComponent"] rescue nil
-
+    
         if(displayname && uninstallpath)
             unless(systemcomponent == 1)
-               software_list << {DisplayName: displayname, Version: version }
+              unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
+                software_list << {DisplayName: displayname, Version: version }
+              end
+            end
+        end
+    
         end
     end
-end
-end
-end
+  end
