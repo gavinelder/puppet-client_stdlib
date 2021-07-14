@@ -26,13 +26,15 @@ Facter.add("installed_packages") do
   end
 end
 
+
+# yes, windows machines exist
 Facter.add('installed_packages') do
   confine :kernel => 'windows'
   setcode do
     require 'win32/registry'
 
     # Generate empty array to store hashes
-    software_list = []
+    installed_packages = []
 
     # Check if reg path exist, return true / false
     def key_exists?(path, scope)
@@ -59,7 +61,10 @@ Facter.add('installed_packages') do
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
             unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
-              software_list << {DisplayName: displayname, Version: version }
+                     installed_packages[display_name] = {
+                    "version" => version,
+                    "installdate" => installdate,
+            }
             end
           end
         end
@@ -82,7 +87,10 @@ Facter.add('installed_packages') do
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
             unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
-              software_list << {DisplayName: displayname, Version: version }
+              installed_packages[display_name] = {
+                    "version" => version,
+                    "installdate" => installdate,
+              }
             end 
           end
         end
@@ -110,16 +118,17 @@ Facter.add('installed_packages') do
                 installdate =  k["InstallDate"] rescue nil
 
                 if(displayname && uninstallpath)
-                  software_list << {DisplayName: displayname, Version: version }
+                  installed_packages[display_name] = {
+                    "version" => version,
+                    "installdate" => installdate,
+                  }
                 end
-                
               end
             end
           end
-
         end
       end  
     end
-    software_list
+    installed_packages
   end
 end
