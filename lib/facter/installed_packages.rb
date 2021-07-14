@@ -46,6 +46,6 @@ Facter.add("installed_packages") do
             unless(systemcomponent == 1)
                software_list << {DisplayName: displayname, Version: version }
         end
-
     end
+end
 end
