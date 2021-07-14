@@ -33,6 +33,7 @@ Facter.add("installed_packages") do
 
   setcode do
     if Facter.value(:os)["release"]["full"].to_i >= 10
+      # Inspired by the following blog post https://tenfoursquid.com/getting-a-list-of-installed-software-in-windows-with-puppet/
       # Loop through all uninstall keys for 64bit applications.  
       Win32::Registry::HKEY_LOCAL_MACHINE.open('Software\Microsoft\Windows\CurrentVersion\Uninstall') do |reg|
         reg.each_key do |key|
@@ -46,12 +47,8 @@ Facter.add("installed_packages") do
 
         if(displayname && uninstallpath)
             unless(systemcomponent == 1)
-              unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
-                software_list << {DisplayName: displayname, Version: version }
-              end
-            end
+               software_list << {DisplayName: displayname, Version: version }
         end
 
-        end
-      end
+    end
 end
