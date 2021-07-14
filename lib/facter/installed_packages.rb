@@ -27,12 +27,9 @@ Facter.add("installed_packages") do
 end
 
 # yes, windows machines exist
-# set to break if powershell cannot be found at the defined path
 Facter.add("installed_packages") do
   confine osfamily: "Windows"
-
   setcode do
-    if Facter.value(:os)["release"]["full"].to_i >= 10
       # Inspired by the following blog post https://tenfoursquid.com/getting-a-list-of-installed-software-in-windows-with-puppet/
       # Loop through all uninstall keys for 64bit applications.  
       Win32::Registry::HKEY_LOCAL_MACHINE.open('Software\Microsoft\Windows\CurrentVersion\Uninstall') do |reg|
