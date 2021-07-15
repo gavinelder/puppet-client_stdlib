@@ -61,11 +61,7 @@ Facter.add('installed_packages') do
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
             unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
-              installed_packages << { "displayname" => displayname {
-                "version" => version,
-                "installdate" => installdate,
-              }
-            }
+              installed_packages << {displayname: displayname,{ version: version} }
             end
           end
         end
@@ -88,11 +84,7 @@ Facter.add('installed_packages') do
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
             unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
-              installed_packages << { "displayname" => displayname {
-                "version" => version,
-                "installdate" => installdate,
-              }
-            }
+              installed_packages << {displayname: displayname,{ version: version} }
             end 
           end
         end
@@ -120,11 +112,7 @@ Facter.add('installed_packages') do
                 installdate =  k["InstallDate"] rescue nil
 
                 if(displayname && uninstallpath)
-                  installed_packages << { "displayname" => displayname {
-                    "version" => version,
-                    "installdate" => installdate,
-                  }
-                }
+                  installed_packages << {displayname: displayname,{ version: version} }
                 end
               end
             end
