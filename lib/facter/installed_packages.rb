@@ -34,7 +34,7 @@ Facter.add('installed_packages') do
     require 'win32/registry'
 
     # Generate empty array to store hashes
-    installed_packages = []
+    installed_packages = {}
 
     # Check if reg path exist, return true / false
     def key_exists?(path, scope)
@@ -61,7 +61,10 @@ Facter.add('installed_packages') do
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
             unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
-              installed_packages << {displayname: displayname,{ version: version} }
+              installed_packages[displayname] = {
+                "version" => displayname,
+                "installdate" => version,
+              }
             end
           end
         end
@@ -84,7 +87,10 @@ Facter.add('installed_packages') do
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
             unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
-              installed_packages << {displayname: displayname,{ version: version} }
+              installed_packages[displayname] = {
+                "version" => displayname,
+                "installdate" => version,
+              }
             end 
           end
         end
@@ -112,7 +118,10 @@ Facter.add('installed_packages') do
                 installdate =  k["InstallDate"] rescue nil
 
                 if(displayname && uninstallpath)
-                  installed_packages << {displayname: displayname,{ version: version} }
+                  installed_packages[displayname] = {
+                    "version" => displayname,
+                    "installdate" => version,
+                  }
                 end
               end
             end
