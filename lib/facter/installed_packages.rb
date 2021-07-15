@@ -60,12 +60,10 @@ Facter.add('installed_packages') do
 
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
-            unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
               installed_packages[displayname] = {
                 "version" => version,
                 "installdate" => installdate,
               }
-            end
           end
         end
 
@@ -86,12 +84,10 @@ Facter.add('installed_packages') do
 
         if(displayname && uninstallpath)
           unless(systemcomponent == 1)
-            unless(displayname.match(/[KB]{2}\d{7}/)) # excludes windows updates
               installed_packages[displayname] = {
                 "version" => version,
                 "installdate" => installdate,
               }
-            end 
           end
         end
 
