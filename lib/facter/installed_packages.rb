@@ -66,7 +66,6 @@ Facter.add('installed_packages') do
               }
           end
         end
-
       end
     end
 
@@ -90,7 +89,6 @@ Facter.add('installed_packages') do
               }
           end
         end
-
       end
     end
 
