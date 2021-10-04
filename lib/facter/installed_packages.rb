@@ -48,7 +48,7 @@ Facter.add("installed_packages") do
 
     # Loop through all uninstall keys for 64bit applications.
     Win32::Registry::HKEY_LOCAL_MACHINE.open('Software\Microsoft\Windows\CurrentVersion\Uninstall') do |reg|
-      reg.each_key do |key|
+      each_key(reg) do |key|
         k = reg.open(key)
         displayname = k["DisplayName"] rescue nil
         version = k["DisplayVersion"] rescue nil
@@ -69,7 +69,7 @@ Facter.add("installed_packages") do
 
     # Loop through all uninstall keys for 32bit applications.
     Win32::Registry::HKEY_LOCAL_MACHINE.open('Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall') do |reg|
-      reg.each_key do |key|
+      each_key(reg) do |key|
         k = reg.open(key)
 
         displayname = k["DisplayName"] rescue nil
@@ -91,7 +91,7 @@ Facter.add("installed_packages") do
 
     # Loop through all uninstall keys for user applications.
     Win32::Registry::HKEY_USERS.open('\\') do |reg|
-      reg.each_key do |sid|
+      each_key(reg) do |sid|
         unless (sid.include?("_Classes"))
           path = "#{sid}\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall"
           scope = "HKEY_USERS"
