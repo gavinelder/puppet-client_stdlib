@@ -32,7 +32,7 @@ Facter.add("installed_packages") do
   confine :kernel => "windows"
   setcode do
     require "win32/registry"
-    require 'puppet/type/registry_key'
+    require 'puppet/util/windows/registry'
 
     # Generate empty array to store hashes
     installed_packages = {}
