@@ -46,11 +46,16 @@ Facter.add("installed_packages") do
       end
     end
 
+    # Helper to handle encoding issues such as U+00AE (®) in the registry
+    def to_utf8(value)
+      value.encode('UTF-8', 'UTF-16LE', :invalid => :replace, :undef => :replace, :replace => '?')
+    end
+
     # Loop through all uninstall keys for 64bit applications.
     Win32::Registry::HKEY_LOCAL_MACHINE.open('Software\Microsoft\Windows\CurrentVersion\Uninstall') do |reg|
       reg.each_key do |key|
         k = reg.open(key)
-        displayname = k["DisplayName"] rescue nil
+        displayname = to_utf8(k["DisplayName"]) rescue nil
         version = k["DisplayVersion"] rescue nil
         uninstallpath = k["UninstallString"] rescue nil
         systemcomponent = k["SystemComponent"] rescue nil
@@ -72,7 +77,7 @@ Facter.add("installed_packages") do
       reg.each_key do |key|
         k = reg.open(key)
 
-        displayname = k["DisplayName"] rescue nil
+        displayname = to_utf8(k["DisplayName"]) rescue nil
         version = k["DisplayVersion"] rescue nil
         uninstallpath = k["UninstallString"] rescue nil
         systemcomponent = k["SystemComponent"] rescue nil
@@ -99,7 +104,7 @@ Facter.add("installed_packages") do
             Win32::Registry::scope.open(path) do |userreg|
               userreg.each_key do |key|
                 k = userreg.open(key)
-                displayname = k["DisplayName"] rescue nil
+                displayname = to_utf8(k["DisplayName"]) rescue nil
                 version = k["DisplayVersion"] rescue nil
                 uninstallpath = k["UninstallString"] rescue nil
                 installdate = k["InstallDate"] rescue nil
