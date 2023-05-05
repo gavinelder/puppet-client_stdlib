@@ -32,6 +32,7 @@ Facter.add("installed_packages") do
   confine :kernel => "windows"
   setcode do
     require "win32/registry"
+    require "puppet/util/character_encoding"
 
     # Generate empty array to store hashes
     installed_packages = {}
@@ -48,7 +49,7 @@ Facter.add("installed_packages") do
 
     # Helper to handle encoding issues such as U+00AE (®) in the registry
     def to_utf8(value)
-      value.encode("UTF-8", "UTF-16LE", :invalid => :replace, :undef => :replace, :replace => "?")
+      Puppet::Util::CharacterEncoding.convert_to_utf_8(value)
     end
 
     # Loop through all uninstall keys for 64bit applications.
