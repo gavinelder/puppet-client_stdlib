@@ -48,7 +48,7 @@ Facter.add("installed_packages") do
 
     # Helper to handle encoding issues such as U+00AE (®) in the registry
     def to_utf8(value)
-      value.encode('UTF-8', 'UTF-16LE', :invalid => :replace, :undef => :replace, :replace => '?')
+      value.encode("UTF-8", "UTF-16LE", :invalid => :replace, :undef => :replace, :replace => "?")
     end
 
     # Loop through all uninstall keys for 64bit applications.
