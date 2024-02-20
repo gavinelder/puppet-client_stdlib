@@ -34,6 +34,13 @@ Facter.add("installed_packages") do
     require "win32/registry"
     require "puppet/util/character_encoding"
 
+      # Function to safely encode strings to a target encoding, replacing undefined characters
+    def safe_encode(str, target_encoding = "UTF-8", fallback = "?")
+      str.encode(target_encoding, invalid: :replace, undef: :replace, replace: fallback)
+    rescue Encoding::UndefinedConversionError
+      fallback
+    end
+
     # Generate empty array to store hashes
     installed_packages = {}
 
@@ -47,16 +54,12 @@ Facter.add("installed_packages") do
       end
     end
 
-    # Helper to handle encoding issues such as U+00AE (®) in the registry
-    def to_utf8(value)
-      Puppet::Util::CharacterEncoding.convert_to_utf_8(value)
-    end
 
     # Loop through all uninstall keys for 64bit applications.
     Win32::Registry::HKEY_LOCAL_MACHINE.open('Software\Microsoft\Windows\CurrentVersion\Uninstall') do |reg|
       reg.each_key do |key|
         k = reg.open(key)
-        displayname = to_utf8(k["DisplayName"]) rescue nil
+        displayname = safe_encode(k["DisplayName"]) rescue nil
         version = k["DisplayVersion"] rescue nil
         uninstallpath = k["UninstallString"] rescue nil
         systemcomponent = k["SystemComponent"] rescue nil
@@ -78,7 +81,7 @@ Facter.add("installed_packages") do
       reg.each_key do |key|
         k = reg.open(key)
 
-        displayname = to_utf8(k["DisplayName"]) rescue nil
+        displayname = safe_encode(k["DisplayName"]) rescue nil
         version = k["DisplayVersion"] rescue nil
         uninstallpath = k["UninstallString"] rescue nil
         systemcomponent = k["SystemComponent"] rescue nil
@@ -105,7 +108,7 @@ Facter.add("installed_packages") do
             Win32::Registry::scope.open(path) do |userreg|
               userreg.each_key do |key|
                 k = userreg.open(key)
-                displayname = to_utf8(k["DisplayName"]) rescue nil
+                displayname = safe_encode(k["DisplayName"]) rescue nil
                 version = k["DisplayVersion"] rescue nil
                 uninstallpath = k["UninstallString"] rescue nil
                 installdate = k["InstallDate"] rescue nil
