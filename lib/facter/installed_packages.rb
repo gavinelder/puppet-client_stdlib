@@ -26,24 +26,3 @@ Facter.add("installed_packages") do
   end
 end
 
-Facter.add("installed_packages") do
-  confine :kernel => "windows"
-  setcode do
-    require 'puppet/util/windows/registry'
-
-    installed_packages = {}
-
-    # Use Puppet::Util::Windows::Registry to get the installed packages
-    Puppet::Util::Windows::Registry.open(HKEY_LOCAL_MACHINE, 'Software\Microsoft\Windows\CurrentVersion\Uninstall', Win32::Registry::KEY_READ | 0x100) do |reg|
-      reg.each_key do |key, _|
-        begin
-          installed_packages[key] = Puppet::Util::Windows::Registry.getkeys(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\#{key}")
-        rescue
-          next
-        end
-      end
-    end
-
-    installed_packages
-  end
-end
