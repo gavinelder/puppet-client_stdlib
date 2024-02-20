@@ -33,42 +33,14 @@ Facter.add("installed_packages") do
 
     installed_packages = {}
 
-    # Assuming KEY_READ and KEY_WOW64_64KEY are available within the Puppet::Util::Windows::Registry module or are defined elsewhere appropriately
-    KEY_READ = Puppet::Util::Windows::Registry::KEY_READ unless defined?(Puppet::Util::Windows::Registry::KEY_READ)
-    KEY_WOW64_64KEY = Puppet::Util::Windows::Registry::KEY_WOW64_64KEY unless defined?(Puppet::Util::Windows::Registry::KEY_WOW64_64KEY)
-
-    def each_installed_package
-      hives = ['HKEY_LOCAL_MACHINE', 'HKEY_CURRENT_USER']
-      paths = ['Software\Microsoft\Windows\CurrentVersion\Uninstall', 'Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall']
-      hives.each do |hive|
-        paths.each do |path|
-          begin
-            Puppet::Util::Windows::Registry.open(hive, path, KEY_READ | KEY_WOW64_64KEY) do |uninstall_key|
-              Puppet::Util::Windows::Registry.each_key(uninstall_key) do |subkey_name, _|
-                Puppet::Util::Windows::Registry.open(uninstall_key, subkey_name, KEY_READ) do |key|
-                  yield key
-                end
-              end
-            end
-          rescue Puppet::Util::Windows::Error => e
-            next if e.code == Puppet::Util::Windows::Error::ERROR_FILE_NOT_FOUND
-          end
+    # Use Puppet::Util::Windows::Registry to get the installed packages
+    Puppet::Util::Windows::Registry.open(HKEY_LOCAL_MACHINE, 'Software\Microsoft\Windows\CurrentVersion\Uninstall', Win32::Registry::KEY_READ | 0x100) do |reg|
+      reg.each_key do |key, _|
+        begin
+          installed_packages[key] = Puppet::Util::Windows::Registry.getkeys(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\#{key}")
+        rescue
+          next
         end
-      end
-    end
-
-    each_installed_package do |key|
-      displayname = key['DisplayName'] rescue nil
-      version = key['DisplayVersion'] rescue nil
-      uninstallpath = key['UninstallString'] rescue nil
-      systemcomponent = key['SystemComponent'] rescue nil
-      installdate = key['InstallDate'] rescue nil
-
-      if displayname && uninstallpath && systemcomponent.to_i != 1
-        installed_packages[displayname] = {
-          "version" => version,
-          "installdate" => installdate,
-        }
       end
     end
 
