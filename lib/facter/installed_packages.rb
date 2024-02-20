@@ -31,7 +31,7 @@ end
 Facter.add("installed_packages") do
   confine :kernel => "windows"
   setcode do
-    require 'puppet/util/windows'
+    require "puppet/util/windows"
     include Puppet::Util::Windows::Registry
 
     # Generate empty array to store hashes
