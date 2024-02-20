@@ -34,7 +34,7 @@ Facter.add("installed_packages") do
     require "win32/registry"
     require "puppet/util/character_encoding"
 
-      # Function to safely encode strings to a target encoding, replacing undefined characters
+    # Function to safely encode strings to a target encoding, replacing undefined characters
     def safe_encode(str, target_encoding = "UTF-8", fallback = "?")
       str.encode(target_encoding, invalid: :replace, undef: :replace, replace: fallback)
     rescue Encoding::UndefinedConversionError
@@ -53,7 +53,6 @@ Facter.add("installed_packages") do
         return false
       end
     end
-
 
     # Loop through all uninstall keys for 64bit applications.
     Win32::Registry::HKEY_LOCAL_MACHINE.open('Software\Microsoft\Windows\CurrentVersion\Uninstall') do |reg|
