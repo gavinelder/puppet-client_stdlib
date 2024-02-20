@@ -28,8 +28,11 @@ end
 
 Facter.add("installed_packages") do
   confine :kernel => "windows"
+
   setcode do
     require "puppet/util/windows/registry"
+
+    KEY_READ = 0x20019
     #include Puppet::Util::Windows::Registry
 
     installed_packages = {}
@@ -40,8 +43,8 @@ Facter.add("installed_packages") do
         "HKEY_CURRENT_USER",
       ]
       paths = [
-        'Software\Microsoft\Windows\CurrentVersion\Uninstall', 
-        'Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
+        'Software\Microsoft\Windows\CurrentVersion\Uninstall',
+        'Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall',
       ]
       hives.each do |hive|
         paths.each do |path|
